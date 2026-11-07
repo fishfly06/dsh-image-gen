@@ -194,7 +194,7 @@ export const IMAGE_GENERATION_NAMESPACE = 'image-generation'
 export const IMAGE_GENERATION_ENTRY_ID = 'image-gen'
 
 /** Supported providers. */
-export const IMAGE_PROVIDERS = ['google', 'openai', 'openai-compat', 'seedream', 'dashscope', 'xai', 'zhipu', 'comfyui', 'chatgpt-sub', 'grok-sub', 'google-sub'] as const
+export const IMAGE_PROVIDERS = ['google', 'openai', 'openai-compat', 'seedream', 'dashscope', 'xai', 'zhipu', 'minimax', 'comfyui', 'chatgpt-sub', 'grok-sub', 'google-sub'] as const
 export type ImageProvider = typeof IMAGE_PROVIDERS[number]
 
 /**
@@ -211,7 +211,7 @@ export function isSubscriptionProvider(provider: ImageProvider): provider is Sub
 }
 
 /** Providers supported by the first browser workbench release. */
-export const CLOUD_IMAGE_PROVIDERS = ['google', 'openai', 'openai-compat', 'seedream', 'dashscope', 'xai', 'zhipu'] as const
+export const CLOUD_IMAGE_PROVIDERS = ['google', 'openai', 'openai-compat', 'seedream', 'dashscope', 'xai', 'zhipu', 'minimax'] as const
 export type CloudImageProvider = typeof CLOUD_IMAGE_PROVIDERS[number]
 
 /** Normalize the relay model list while keeping the legacy default model selectable. */
@@ -369,6 +369,10 @@ export const SEEDREAM_API_KEY_ENV = 'ARK_API_KEY'
 export const DASHSCOPE_API_KEY_ENV = 'DASHSCOPE_API_KEY'
 /** xAI credential reference; matches the official xAI SDK environment name. */
 export const XAI_API_KEY_ENV = 'XAI_API_KEY'
+/** MiniMax uses its own credential and native image endpoint. */
+export const MINIMAX_API_KEY_ENV = 'MINIMAX_API_KEY'
+export const DEFAULT_MINIMAX_BASE_URL = 'https://api.minimax.cn/v1'
+export const DEFAULT_MINIMAX_MODEL = 'image-01'
 /** Zhipu credential reference; matches the official Zhipu SDK environment name. */
 export const ZHIPU_API_KEY_ENV = 'ZHIPUAI_API_KEY'
 
@@ -381,6 +385,7 @@ export const CLOUD_CREDENTIAL_REFS: Record<CloudImageProvider, string> = {
   dashscope: DASHSCOPE_API_KEY_ENV,
   xai: XAI_API_KEY_ENV,
   zhipu: ZHIPU_API_KEY_ENV,
+  minimax: MINIMAX_API_KEY_ENV,
 }
 
 /** The credential reference storing this provider's API key, when it uses one. */
@@ -399,6 +404,7 @@ export const PROVIDER_DISPLAY_NAMES: Record<ImageProvider, string> = {
   dashscope: 'DashScope',
   xai: 'xAI Grok',
   zhipu: '智谱 GLM',
+  minimax: 'MiniMax',
   comfyui: 'ComfyUI',
   'chatgpt-sub': 'ChatGPT 订阅',
   'grok-sub': 'Grok 订阅',
@@ -699,6 +705,7 @@ export const DEFAULT_MODELS: Record<ImageProvider, string> = {
   dashscope: DEFAULT_DASHSCOPE_MODEL,
   xai: DEFAULT_XAI_MODEL,
   zhipu: DEFAULT_ZHIPU_MODEL,
+  minimax: DEFAULT_MINIMAX_MODEL,
   comfyui: DEFAULT_COMFYUI_WORKFLOW_LABEL,
   'chatgpt-sub': DEFAULT_SUBSCRIPTION_MODELS['chatgpt-sub'],
   'grok-sub': DEFAULT_SUBSCRIPTION_MODELS['grok-sub'],
@@ -714,6 +721,7 @@ export const DEFAULT_BASE_URLS: Record<ImageProvider, string> = {
   dashscope: DEFAULT_DASHSCOPE_ENDPOINT,
   xai: DEFAULT_XAI_BASE_URL,
   zhipu: DEFAULT_ZHIPU_BASE_URL,
+  minimax: DEFAULT_MINIMAX_BASE_URL,
   comfyui: DEFAULT_COMFYUI_BASE_URL,
   // Subscription channels call an in-process service, never a URL.
   'chatgpt-sub': '',

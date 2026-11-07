@@ -1262,6 +1262,7 @@ export const GalleryViewTab: FC<GalleryViewTabProps> = (props) => {
               <option value="seedream">{t('filterSeedream')}</option>
               <option value="dashscope">{t('filterDashScope')}</option>
               <option value="xai">{t('filterXAI')}</option>
+              <option value="minimax">{t('filterMiniMax')}</option>
               <option value="zhipu">{t('filterZhipu')}</option>
               <option value="comfyui">{t('filterComfyUI')}</option>
               <option value="import">{t('filterImport')}</option>

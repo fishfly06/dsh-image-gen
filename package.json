@@ -34,6 +34,7 @@
     "README.md",
     "README.en.md",
     "docs/assets/readme/*.webp",
+    "docs/MINIMAX.md",
     "LICENSE"
   ],
   "dsh": {

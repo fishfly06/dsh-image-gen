@@ -126,7 +126,7 @@ async function card(ctx, provider = 'openai-compat') {
   // The card renders open on the plugin's own page now, so only the provider
   // row still needs a click to expand.
   const rows = () => renderer.root.findAll(node => node.type === 'div' && node.props.className?.startsWith('dsh-ig-provider-row'))
-  const providerLabels = { 'openai-compat': 'OpenAI 兼容', google: 'Google Gemini' }
+  const providerLabels = { 'openai-compat': 'OpenAI 兼容', google: 'Google Gemini', minimax: 'MiniMax' }
   const row = () => rows().find(node => text(node.findByProps({ className: 'dsh-ig-provider-name' })) === providerLabels[provider])
   const targetRow = row()
   assert.ok(targetRow, `Missing ${provider}; rendered rows: ${JSON.stringify(rows().map(node => text(node.findByProps({ className: 'dsh-ig-provider-name' }))))}`)
@@ -178,6 +178,13 @@ try {
     await waitFor(() => text(google.row()).includes('Saved'))
     assert.equal(ctx.settings.describe().find(row => row.ns === 'image-gen').value.googleNative, true)
     await google.close()
+    const minimax = await card(ctx, 'minimax')
+    await minimax.type('url', 'https://minimax.example/v1')
+    await act(async () => { minimax.field('Model').props.onChange({ target: { value: 'image-01-live' } }) })
+    await minimax.save()
+    await waitFor(() => text(minimax.row()).includes('Saved'))
+    assert.equal(ctx.settings.describe().find(row => row.ns === 'image-gen').value.minimaxModel, 'image-01-live')
+    await minimax.close()
     await ctx.fiber.dispose()
     ctx = await start()
     const restarted = await card(ctx)
@@ -188,6 +195,11 @@ try {
     console.log('PASS: separate editing model and SiliconFlow format persist through installed UI, real DSH settings, a fresh form, and host restart')
     await restarted.close()
     const nativeRestarted = await card(ctx, 'google')
+    const minimaxRestarted = await card(ctx, 'minimax')
+    assert.equal(minimaxRestarted.input('url').props.value, 'https://minimax.example/v1')
+    assert.equal(minimaxRestarted.field('Model').props.value, 'image-01-live')
+    console.log('PASS: MiniMax model and endpoint persist through the installed card, real DSH settings, and host restart')
+    await minimaxRestarted.close()
     assert.equal(nativeRestarted.row().findByType('select').props.value, 'native')
     assert.equal(nativeRestarted.input('url').props.value, 'https://native.example/v1beta')
     console.log('PASS: native Google protocol persists through the installed card, real DSH settings, and host restart')

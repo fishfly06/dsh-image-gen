@@ -126,6 +126,8 @@ interface ImageSettings {
   xaiModel?: string
   zhipuBaseURL?: string
   zhipuModel?: string
+  minimaxModel?: string
+  minimaxBaseURL?: string
   comfyuiBaseURL?: string
   comfyuiWorkflows?: ComfyUIWorkflowEntry[]
   comfyuiActiveWorkflow?: string
@@ -598,6 +600,7 @@ const CLOUD_MODEL_FIELDS = {
   dashscope: 'dashscopeModel',
   xai: 'xaiModel',
   zhipu: 'zhipuModel',
+  minimax: 'minimaxModel',
 } as const satisfies Record<CloudImageProvider, keyof ImageSettings>
 
 /** Settings field each cloud provider persists its endpoint or base URL under. */
@@ -609,6 +612,7 @@ const CLOUD_URL_FIELDS = {
   dashscope: 'dashscopeEndpoint',
   xai: 'xaiBaseURL',
   zhipu: 'zhipuBaseURL',
+  minimax: 'minimaxBaseURL',
 } as const satisfies Record<CloudImageProvider, keyof ImageSettings>
 
 /** Dictionary key of each cloud provider's endpoint hint. */
@@ -620,6 +624,7 @@ const CLOUD_HINT_KEYS = {
   dashscope: 'endpointHintDashScope',
   xai: 'endpointHintXAI',
   zhipu: 'endpointHintZhipu',
+  minimax: 'endpointHintMiniMax',
 } as const satisfies Record<CloudImageProvider, DictKey>
 
 /** Config field a cloud provider persists its model under. */
@@ -895,6 +900,7 @@ export function ImageGenerationSettingsCard(props: SettingsCardProps) {
     dashscope: t('providerDashScope'),
     xai: t('providerXAI'),
     zhipu: t('providerZhipu'),
+    minimax: t('providerMiniMax'),
     comfyui: t('providerComfyUI'),
     'chatgpt-sub': t('providerChatGPTSub'),
     'grok-sub': t('providerGrokSub'),
@@ -1596,7 +1602,7 @@ export function ImageGenerationSettingsCard(props: SettingsCardProps) {
           <div className="dsh-ig-row-actions">
             <p className={`dsh-ig-status${row.messageIsError ? ' dsh-ig-status-error' : ''}`} role="status">{row.message || testResultText(row.testResult)}</p>
             <span className="dsh-ig-row-buttons">
-              <button type="button" className="dsh-ig-btn-secondary" disabled={row.testing || row.saving} onClick={() => { void testConnection(provider, channel) }}>{row.testing ? t('testing') : t('testConnection')}</button>
+              {provider === 'minimax' ? <span className="dsh-ig-hint">{t('minimaxTestHint')}</span> : (<button type="button" className="dsh-ig-btn-secondary" disabled={row.testing || row.saving} onClick={() => { void testConnection(provider, channel) }}>{row.testing ? t('testing') : t('testConnection')}</button>)}
               {row.keyStatus === 'configured' && !keyReadOnly ? (
                 <button type="button" className="dsh-ig-btn-secondary dsh-ig-btn-danger" disabled={row.saving} onClick={() => { void clearProviderKey(provider, channel) }}>{t('clearKey')}</button>
               ) : null}

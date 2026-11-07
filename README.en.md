@@ -454,3 +454,8 @@ If `dsh-image-gen` improves your workflow, consider giving the project a ⭐ **S
 **[View Releases](https://github.com/shanliuling/dsh-image-gen/releases) · [Open an Issue](https://github.com/shanliuling/dsh-image-gen/issues) · [Contribute](CONTRIBUTING.md)**
 
 </div>
+
+
+### Local extension: MiniMax
+
+Native MiniMax text-to-image support is available in this fork. See [MiniMax integration notes](docs/MINIMAX.md) for configuration and limitations.

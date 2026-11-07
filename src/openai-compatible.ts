@@ -304,7 +304,7 @@ function firstImage(value: unknown): { b64_json?: string; url?: string; mime_typ
       : undefined
 }
 
-async function downloadImage(
+export async function downloadImage(
   url: string | undefined,
   provider: string,
   input: { baseURL: string; maxBytes: number; signal: AbortSignal; apiKey?: string },
@@ -408,7 +408,7 @@ function imageMediaType(value: string | null | undefined): ImageMediaType | unde
 
 async function readBoundedText(response: Response, maxBytes: number): Promise<string> { return new TextDecoder().decode(await readBoundedBytes(response, maxBytes)) }
 
-async function readBoundedBytes(response: Response, maxBytes: number): Promise<Uint8Array> {
+export async function readBoundedBytes(response: Response, maxBytes: number): Promise<Uint8Array> {
   if (response.body === null) return new Uint8Array()
   const reader = response.body.getReader(); const chunks: Uint8Array[] = []; let bytes = 0
   try { for (;;) { const next = await readResponseBody(response, () => reader.read()); if (next.done) break; bytes += next.value.byteLength; if (bytes > maxBytes) throw new Error(`Image response exceeded the ${String(maxBytes)} byte limit`); chunks.push(next.value) } } catch (error) { await reader.cancel().catch(() => undefined); throw error } finally { reader.releaseLock() }

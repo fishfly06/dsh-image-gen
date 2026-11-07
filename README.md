@@ -454,3 +454,8 @@ pnpm run test:package
 **[查看 Releases](https://github.com/shanliuling/dsh-image-gen/releases) · [提交 Issue](https://github.com/shanliuling/dsh-image-gen/issues) · [参与贡献](CONTRIBUTING.md)**
 
 </div>
+
+
+### 本地维护版：MiniMax
+
+新增 MiniMax 原生文生图支持，配置、接口与限制见 [MiniMax 接入说明](docs/MINIMAX.md)。

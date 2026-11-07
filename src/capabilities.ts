@@ -152,6 +152,7 @@ export const CLOUD_CAPABILITIES: Record<Exclude<CloudImageProvider, 'openai-comp
     'auto',
     '1k',
   ),
+  minimax: capability(['1:1', '16:9', '4:3', '3:2', '2:3', '3:4', '9:16', '21:9'], [{ value: 'standard', label: '标准' }], '1:1', 'standard'),
   zhipu: capability(
     Object.keys(ZHIPU_SIZE_TABLE),
     [{ value: 'hd', label: '高清' }],

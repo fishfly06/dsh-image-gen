@@ -67,6 +67,7 @@ export function probeTarget(
   if (provider === 'xai') {
     return { url: joinUrl(config.xaiBaseURL ?? DEFAULT_XAI_BASE_URL, 'models'), headers }
   }
+  if (provider === 'minimax') throw new Error('MiniMax 不提供无消耗的鉴权探测；请通过生成一张图片验证 API Key')
   if (provider === 'zhipu') {
     return { url: joinUrl(config.zhipuBaseURL ?? DEFAULT_ZHIPU_BASE_URL, 'models'), headers }
   }
@@ -378,6 +379,7 @@ export async function serveTestConnection(req: IncomingMessage, res: ServerRespo
     // Model pulling ships for every cloud provider; ComfyUI and the
     // subscription channels have no catalog to list.
     if (active === 'comfyui' || isSubscriptionProvider(active)) return jsonError(res, 400, 'models-unsupported')
+    if (active === 'minimax') return json(res, 200, { ok: true, models: ['image-01', 'image-01-live'] })
     let result: ModelsResult
     try {
       const apiKey = await deps.resolveKey(active as CloudImageProvider, channel)

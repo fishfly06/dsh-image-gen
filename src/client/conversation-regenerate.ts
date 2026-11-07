@@ -47,6 +47,7 @@ function outputSettings(provider: CloudImageProvider, output?: string | undefine
       quality: rawQuality === '1K' || rawQuality === '2K' || rawQuality === '4K' ? rawQuality : '1K',
     }
   }
+  if (provider === 'minimax') return { ratio: normalized || '1:1', quality: 'standard' }
   if (provider === 'seedream') {
     return { ratio: 'auto', quality: normalized === '1K' || normalized === '4K' ? normalized : '2K' }
   }

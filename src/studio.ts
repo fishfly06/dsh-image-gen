@@ -15,6 +15,7 @@ import { editDashScopeImage, generateDashScopeImage } from './dashscope.js'
 import { requireApiKey, resolveApiKey } from './credentials.js'
 import { editGoogleImage, generateGoogleImage } from './google.js'
 import { editOpenAICompatibleImage, generateOpenAICompatibleImage } from './openai-compatible.js'
+import { generateMiniMaxImage } from './minimax.js'
 import { editSeedreamImage } from './seedream.js'
 import { generateSubscriptionImage, vendorOf, type SubscriptionManager } from './subscription.js'
 import {
@@ -261,6 +262,10 @@ export async function generateFromStudio(
         ? await editGoogleImage({ apiKey: credential, endpoint: wired.endpoint, native: wired.native, model: wired.model, prompt: input.prompt, sourceImages, aspectRatio, imageSize, maxBytes: ctx.attachments.imageLimits.maxImageBytes, signal })
         : await generateGoogleImage({ apiKey: credential, endpoint: wired.endpoint, native: wired.native, model: wired.model, prompt: input.prompt, aspectRatio, imageSize, maxBytes: ctx.attachments.imageLimits.maxImageBytes, signal })
       output = `${aspectRatio}, ${imageSize}`
+    } else if (wired.provider === 'minimax') {
+      if (input.mode === 'edit') throw new Error('MiniMax 当前支持文生图，请切换到文生图模式')
+      generated = await generateMiniMaxImage({ apiKey: credential, baseURL: wired.baseURL, model: wired.model, prompt: input.prompt, aspectRatio: input.ratio, maxBytes: ctx.attachments.imageLimits.maxImageBytes, signal })
+      output = input.ratio
     } else if (wired.provider === 'openai' || wired.provider === 'openai-compat' || wired.provider === 'xai' || wired.provider === 'zhipu') {
       // openai-compat keeps its configured relay table; the others resolve via
       // the capability table. xAI speaks aspect_ratio+resolution, not size.
@@ -607,7 +612,7 @@ function profile(
     label: CLOUD_DISPLAY_LABELS[provider],
     model,
     configured,
-    supportsEditing: true,
+    supportsEditing: provider !== 'minimax',
     ratioOptions,
     qualityOptions,
     defaultRatio,
@@ -624,6 +629,7 @@ const CLOUD_DISPLAY_LABELS: Record<CloudImageProvider, string> = {
   dashscope: 'DashScope',
   xai: 'xAI Grok',
   zhipu: '智谱 GLM',
+  minimax: 'MiniMax',
 }
 
 function option(value: string): StudioOption {

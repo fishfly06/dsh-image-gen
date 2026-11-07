@@ -70,6 +70,25 @@ function toolByName(tools: ToolDefinition[], name: string): ToolDefinition {
 }
 
 describe('image tool registration', () => {
+  it('routes MiniMax single and batch generation to the native image endpoint', async () => {
+    const { ctx, tools } = harnessContext()
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2])
+    const fetchMock = vi.fn(async (_url: unknown, init?: RequestInit) => init?.method === 'POST'
+      ? Response.json({ base_resp: { status_code: 0 }, data: { image_urls: ['https://cdn.example/image.jpg'] } })
+      : new Response(bytes, { headers: { 'content-type': 'image/jpeg' } }))
+    vi.stubGlobal('fetch', fetchMock)
+    apply(ctx, { provider: 'minimax', saveToWorkspace: false })
+    const exec = { signal: new AbortController().signal } as never
+    const single = await toolByName(tools, 'generate_image').execute({ prompt: 'one', aspect_ratio: '16:9' }, exec)
+    expect(single).toMatchObject({ provider: 'minimax', model: 'image-01', output: '16:9' })
+    await toolByName(tools, 'generate_images').execute({ prompts: ['two', 'three'] }, exec)
+    const requests = fetchMock.mock.calls.filter(([, init]) => init?.method === 'POST')
+    expect(requests).toHaveLength(3)
+    expect(requests.every(([url]) => String(url) === 'https://api.minimax.cn/v1/image_generation')).toBe(true)
+    expect(requests.map(([, init]) => JSON.parse(String(init?.body)).prompt)).toEqual(['one', 'two', 'three'])
+    expect(ctx.credentials.resolve).toHaveBeenCalledWith('MINIMAX_API_KEY')
+  })
+
   it('routes native Google generation, batch generation and edits through the configured protocol', async () => {
     const { ctx, tools } = harnessContext()
     const fetchMock = vi.fn(async () => Response.json({ candidates: [{ content: { parts: [{ inlineData: { data: 'iVBORw0KGgo=', mimeType: 'image/png' } }] } }] }))

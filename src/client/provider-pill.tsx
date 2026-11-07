@@ -41,6 +41,8 @@ export interface PillSettings {
   dashscopeModel?: string
   xaiModel?: string
   zhipuModel?: string
+  minimaxModel?: string
+  minimaxBaseURL?: string
   comfyuiWorkflows?: readonly ComfyUIWorkflowEntry[]
   comfyuiActiveWorkflow?: string
   comfyuiWorkflowJson?: string
@@ -112,6 +114,7 @@ const PILL_PROVIDER_LABELS: Record<'zh' | 'en', Record<ImageProvider, string>> =
     dashscope: 'DashScope',
     xai: 'Grok',
     zhipu: '智谱 GLM',
+    minimax: 'MiniMax',
     comfyui: 'ComfyUI',
     'chatgpt-sub': 'ChatGPT 订阅',
     'grok-sub': 'Grok 订阅',
@@ -125,6 +128,7 @@ const PILL_PROVIDER_LABELS: Record<'zh' | 'en', Record<ImageProvider, string>> =
     dashscope: 'DashScope',
     xai: 'Grok',
     zhipu: 'Zhipu GLM',
+    minimax: 'MiniMax',
     comfyui: 'ComfyUI',
     'chatgpt-sub': 'ChatGPT Sub',
     'grok-sub': 'Grok Sub',
@@ -161,6 +165,7 @@ const PILL_MODEL_FIELDS: Partial<Record<ImageProvider, keyof PillSettings>> = {
   dashscope: 'dashscopeModel',
   xai: 'xaiModel',
   zhipu: 'zhipuModel',
+  minimax: 'minimaxModel',
 }
 
 const PILL_MODEL_OPTIONS_FIELDS: Partial<Record<ImageProvider, keyof PillSettings>> = {
